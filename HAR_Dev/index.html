@@ -7,27 +7,73 @@
 		<title></title>
 		<script src="js/mui.min.js"></script>
 		<link href="css/mui.min.css" rel="stylesheet" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-		      	mui.plusReady(function(){
-			// 扩展API加载完毕，现在可以正常调用扩展API
-			var acc = document.getElementById("acc");
-			plus.accelerometer.watchAcceleration( function ( a ) {
-				acc.innerText =  "x:" + a.xAxis + "\ny:" + a.yAxis + "\nz:" + a.zAxis;
-			}, function ( e ) {
-				alert( "Acceleration error: " + e.message ); 
-			},{frequency:1000} ); 
-		      	
-		      		})
+			mui.plusReady(function() {
+				plus.navigator.setStatusBarBackground("#34495e");
+				plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+				document.getElementById("startbtn").addEventListener('tap', function() {
+						var acc = document.getElementById("acc");
+						document.getElementById("status").innerHTML = 'Recognizing';
+						document.getElementById("indicator").style.display = ''
+							wid = plus.accelerometer.watchAcceleration(function(a) {
+								accx.innerText = a.xAxis;
+								accy.innerHTML = a.yAxis;
+								accz.innerText = a.zAxis;
+							}, function(e) {
+								alert("Acceleration error: " + e.message);
+							}, {
+								frequency: 1000
+							});
+						
+					})
+					// 扩展API加载完毕，现在可以正常调用扩展API
+				document.getElementById("stopbtn").addEventListener('tap',function(){
+					plus.accelerometer.clearWatch( wid );
+					document.getElementById("status").innerHTML = 'idle';
+					document.getElementById("indicator").style.display = 'none';
+				})
+			})
 		</script>
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title">加速器检测</h1>
+		<header class="mui-bar mui-bar-nav" style="background-color: #34495e;height:64px;padding-top: 20px;">
+			<h1 class="mui-title" style="color:#ffffff">Action Classifier</h1>
 		</header>
-		<div class="mui-content">
-			<p id="acc"></p>
+		<div class="mui-content" style="margin-top:20px">
+			<div class="mui-card" style="margin-bottom: 35px;">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" style="text-align: center;height:60px;color:#666666">
+						<span id="status">idle</span> <span id="indicator" class="mui-icon mui-spinner mui-spin" style="position: relative;top:6px;display: none;"></span>
+					</li>
+				</ul>
+			</div>
+
+			<div class="mui-card" style="margin-bottom: 35px;">
+				<ul class="mui-table-view" style="padding-left: 10px;">
+					<li class="mui-table-view-cell" style="height:60px;padding-top: 20px;color:#666666">
+						X : <span id="accx"></span>
+					</li>
+					<li class="mui-table-view-cell" style="height:60px;padding-top: 20px;color:#666666">
+						Y : <span id="accy"></span>
+					</li>
+					<li class="mui-table-view-cell" style="height:60px;padding-top: 20px;color:#666666">
+						Z : <span id="accz"></span>
+					</li>
+				</ul>
+			</div>
+			<div class="mui-table" style="padding-left: 15px;padding-right: 15px;">
+		                <div class="mui-table-cell mui-col-xs-6">
+				<button id="startbtn" type="button" class="mui-btn" style="width:90%;height:50px;">Start</button>
+		                </div>
+		                <div class="mui-table-cell mui-col-xs-6" style="text-align: right;">
+			<button id="stopbtn" type="button" class="mui-btn" style="width:90%;height:50px;">Stop</button>
+		                </div>
+		            </div>
+			
 		</div>
 	</body>
 
